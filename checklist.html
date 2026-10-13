@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Structured Cabling Field Verification Checklist — CAT 5 / 5e / 6 / 6A</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+/* ── VARIABLES ─────────────────────────────────────── */
+:root {
+  --ink: #0d1117;
+  --surface: #161b22;
+  --card: #1c2330;
+  --border: #2a3444;
+  --amber: #f0a500;
+  --amber-glow: rgba(240,165,0,0.10);
+  --green: #3fb950;
+  --red: #f85149;
+  --blue: #58a6ff;
+  --muted: #8b9ab0;
+  --text: #cdd9e5;
+  --text-dim: #768390;
+  --white: #e6edf3;
+}
+
+/* ── RESET ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── SCREEN HEADER ─────────────────────────────────── */
+.screen-header {
+  background: linear-gradient(135deg, #0d1117 0%, #131922 60%, #1a2436 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 28px 40px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.screen-header-left {}
+.doc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--amber-glow);
+  border: 1px solid rgba(240,165,0,0.3);
+  border-radius: 3px;
+  padding: 3px 9px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--amber);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.doc-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--amber);
+  border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.3px;
+}
+h1 span { color: var(--amber); }
+.subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.btn {
+  padding: 9px 18px;
+  border-radius: 4px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+.btn-primary {
+  background: var(--amber);
+  color: #0d1117;
+}
+.btn-primary:hover { background: #d49000; }
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-secondary:hover { border-color: var(--amber); color: var(--amber); }
+.btn-danger {
+  background: transparent;
+  border: 1px solid rgba(248,81,73,0.35);
+  color: var(--red);
+  font-size: 12px;
+  padding: 5px 10px;
+}
+.btn-danger:hover { background: rgba(248,81,73,0.1); }
+.btn-add {
+  background: rgba(63,185,80,0.1);
+  border: 1px solid rgba(63,185,80,0.3);
+  color: var(--green);
+  font-size: 13px;
+  padding: 7px 16px;
+}
+.btn-add:hover { background: rgba(63,185,80,0.18); }
+
+/* ── MAIN LAYOUT ───────────────────────────────────── */
+.main {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 30px 40px 80px;
+}
+
+/* ── SUMMARY STRIP ─────────────────────────────────── */
+.summary-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.stat-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 14px 16px;
+  text-align: center;
+}
+.stat-val {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.stat-val.total { color: var(--white); }
+.stat-val.pass  { color: var(--green); }
+.stat-val.fail  { color: var(--red); }
+.stat-val.pending { color: var(--amber); }
+.stat-val.pct { color: var(--blue); }
+.stat-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── PROJECT INFO ──────────────────────────────────── */
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.field-group { display: flex; flex-direction: column; gap: 5px; }
+.field-group label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.field-group input, .field-group select {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 10px;
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field-group input:focus, .field-group select:focus {
+  border-color: rgba(240,165,0,0.5);
+}
+.field-group select option { background: #1c2330; }
+
+/* ── PHASE 1 PRE-TEST CHECKLIST ────────────────────── */
+.pre-checklist {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+.pre-checklist h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+.check-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 8px;
+}
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s;
+  user-select: none;
+}
+.check-item:hover { background: rgba(255,255,255,0.03); }
+.check-item input[type="checkbox"] {
+  appearance: none;
+  width: 17px; height: 17px;
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  background: var(--surface);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.12s;
+  position: relative;
+}
+.check-item input[type="checkbox"]:checked {
+  background: var(--green);
+  border-color: var(--green);
+}
+.check-item input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  color: #0d1117;
+  font-size: 11px;
+  font-weight: 700;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.check-item span {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.3;
+}
+.check-item.checked span { color: var(--text-dim); text-decoration: line-through; }
+
+/* ── DROP TABLE ────────────────────────────────────── */
+.table-section { margin-bottom: 28px; }
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.table-header h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.02em;
+}
+.table-actions { display: flex; gap: 8px; align-items: center; }
+
+.drop-table-wrap { overflow-x: auto; border-radius: 6px; border: 1px solid var(--border); }
+table.drops {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 960px;
+}
+table.drops thead tr {
+  background: rgba(240,165,0,0.08);
+}
+table.drops th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 10px 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(240,165,0,0.25);
+  white-space: nowrap;
+}
+table.drops td {
+  padding: 5px 6px;
+  border-bottom: 1px solid rgba(42,52,68,0.7);
+  vertical-align: middle;
+}
+table.drops tr:last-child td { border-bottom: none; }
+table.drops tr:hover td { background: rgba(255,255,255,0.015); }
+
+/* inline inputs */
+table.drops input[type="text"],
+table.drops input[type="number"] {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 5px 7px;
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.12s, background 0.12s;
+}
+table.drops input[type="text"]:focus,
+table.drops input[type="number"]:focus {
+  border-color: rgba(240,165,0,0.4);
+  background: rgba(240,165,0,0.05);
+}
+table.drops select {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 5px 4px;
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  width: 100%;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.12s;
+}
+table.drops select:focus {
+  border-color: rgba(240,165,0,0.4);
+}
+table.drops select option { background: #1c2330; color: var(--white); }
+
+/* result badge in table */
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  padding: 4px 0;
+  border-radius: 3px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  transition: all 0.12s;
+}
+.result-badge.pass { background: rgba(63,185,80,0.15); color: var(--green); border-color: rgba(63,185,80,0.25); }
+.result-badge.fail { background: rgba(248,81,73,0.15); color: var(--red); border-color: rgba(248,81,73,0.25); }
+.result-badge.pending { background: rgba(240,165,0,0.1); color: var(--amber); border-color: rgba(240,165,0,0.2); }
+
+/* row state coloring */
+tr.row-fail td { background: rgba(248,81,73,0.04); }
+tr.row-pass td { background: rgba(63,185,80,0.03); }
+
+/* narrow cols */
+.col-id   { min-width: 90px; }
+.col-loc  { min-width: 110px; }
+.col-wm   { width: 60px; text-align: center; }
+.col-sp   { width: 60px; text-align: center; }
+.col-len  { width: 72px; }
+.col-poe  { width: 80px; }
+.col-pv   { width: 72px; }
+.col-ls   { width: 80px; }
+.col-res  { width: 80px; text-align: center; }
+.col-note { min-width: 120px; }
+.col-init { width: 60px; }
+.col-del  { width: 36px; text-align: center; }
+
+/* boolean select styling */
+select.bool-pass { color: var(--green); }
+select.bool-fail { color: var(--red); }
+select.bool-pend { color: var(--text-dim); }
+
+/* ── DEFECT LOG ────────────────────────────────────── */
+.defect-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+.defect-section h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+.defect-list { display: flex; flex-direction: column; gap: 8px; }
+.defect-row {
+  display: grid;
+  grid-template-columns: 90px 120px 1fr 140px 80px;
+  gap: 8px;
+  align-items: center;
+}
+.defect-row input, .defect-row select, .defect-row textarea {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 6px 9px;
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.12s;
+}
+.defect-row input:focus, .defect-row select:focus, .defect-row textarea:focus {
+  border-color: rgba(248,81,73,0.4);
+}
+.defect-row select option { background: #1c2330; }
+.defect-empty {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* ── SIGN-OFF ───────────────────────────────────────── */
+.signoff-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+.signoff-section h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+.signoff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.signoff-field { display: flex; flex-direction: column; gap: 5px; }
+.signoff-field label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.signoff-field input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.12s;
+}
+.signoff-field input:focus { border-color: rgba(240,165,0,0.4); }
+.sig-line {
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  width: 100%;
+  padding: 8px 0;
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  outline: none;
+}
+
+/* ── CERTIFICATION TRACKER ─────────────────────────── */
+.cert-section {
+  background: rgba(88,166,255,0.04);
+  border: 1px solid rgba(88,166,255,0.2);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+.cert-section h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+.cert-section p {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.cert-field { display: flex; flex-direction: column; gap: 5px; }
+.cert-field label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(88,166,255,0.7);
+}
+.cert-field input, .cert-field select {
+  background: rgba(88,166,255,0.05);
+  border: 1px solid rgba(88,166,255,0.2);
+  border-radius: 4px;
+  padding: 7px 10px;
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.12s;
+}
+.cert-field input:focus, .cert-field select:focus {
+  border-color: rgba(88,166,255,0.5);
+}
+.cert-field select option { background: #1c2330; }
+
+/* ── DIVIDER ───────────────────────────────────────── */
+hr.div { border: none; border-top: 1px solid var(--border); margin: 4px 0 20px; }
+
+/* ── TOAST ─────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: 5px;
+  padding: 12px 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--white);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ══════════════════════════════════════════════════════
+   PRINT STYLES
+══════════════════════════════════════════════════════ */
+@media print {
+  @page {
+    size: landscape;
+    margin: 12mm 10mm 12mm 10mm;
+  }
+
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    font-size: 9pt !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .screen-header { display: none !important; }
+  .header-actions { display: none !important; }
+  .btn-add, .btn-danger, .btn-secondary, .btn-primary { display: none !important; }
+  .toast { display: none !important; }
+
+  .main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Print document header */
+  .print-header {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #111;
+  }
+  .print-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18pt;
+    font-weight: 800;
+    color: #111;
+  }
+  .print-title span { color: #c47f00; }
+  .print-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8pt;
+    color: #555;
+    text-align: right;
+  }
+
+  /* Cards / sections */
+  .summary-strip {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 10px !important;
+  }
+  .stat-box {
+    background: #f5f5f5 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 3px !important;
+    padding: 6px 8px !important;
+  }
+  .stat-val { font-size: 18pt !important; color: #111 !important; }
+  .stat-val.pass { color: #1a7a30 !important; }
+  .stat-val.fail { color: #b00 !important; }
+  .stat-val.pending { color: #8a5f00 !important; }
+  .stat-val.pct { color: #2255aa !important; }
+  .stat-label { color: #666 !important; }
+
+  .pre-checklist, .defect-section, .signoff-section, .cert-section {
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+    border-radius: 0 !important;
+    margin-bottom: 8px !important;
+    page-break-inside: avoid;
+  }
+  .pre-checklist h2, .defect-section h2, .signoff-section h2, .cert-section h2 {
+    color: #111 !important;
+    font-size: 11pt !important;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+    margin-bottom: 8px !important;
+  }
+  .section-label { color: #8a5f00 !important; }
+
+  .check-item { padding: 4px 6px !important; }
+  .check-item input[type="checkbox"] {
+    border: 1.5px solid #777 !important;
+    background: #fff !important;
+    width: 13px !important; height: 13px !important;
+  }
+  .check-item input[type="checkbox"]:checked { background: #1a7a30 !important; border-color: #1a7a30 !important; }
+  .check-item span { color: #111 !important; font-size: 9pt !important; }
+  .check-item.checked span { color: #888 !important; }
+
+  /* Drop table */
+  .drop-table-wrap {
+    border: 1px solid #ccc !important;
+    border-radius: 0 !important;
+    margin-bottom: 8px !important;
+  }
+  table.drops {
+    font-size: 8pt !important;
+    min-width: 0 !important;
+  }
+  table.drops thead tr { background: #f0e8cc !important; }
+  table.drops th {
+    color: #555 !important;
+    padding: 5px 5px !important;
+    border-bottom: 1px solid #bbb !important;
+    font-size: 7pt !important;
+  }
+  table.drops td {
+    padding: 3px 4px !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+    color: #111 !important;
+  }
+  table.drops input[type="text"],
+  table.drops input[type="number"],
+  table.drops select {
+    color: #111 !important;
+    font-size: 8pt !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    pointer-events: none;
+  }
+  .result-badge {
+    font-size: 7pt !important;
+    padding: 2px 4px !important;
+    width: auto !important;
+  }
+  .result-badge.pass { background: #d4f0da !important; color: #1a7a30 !important; }
+  .result-badge.fail { background: #fde8e8 !important; color: #b00 !important; }
+  .result-badge.pending { background: #fff3cc !important; color: #8a5f00 !important; }
+  tr.row-fail td { background: #fff7f7 !important; }
+  tr.row-pass td { background: #f7fff8 !important; }
+
+  /* Defect rows */
+  .defect-row {
+    grid-template-columns: 70px 100px 1fr 120px 70px !important;
+    gap: 4px !important;
+  }
+  .defect-row input, .defect-row select, .defect-row textarea {
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+    color: #111 !important;
+    font-size: 8pt !important;
+  }
+
+  /* Sign-off */
+  .signoff-field input, .sig-line {
+    color: #111 !important;
+    border-color: #999 !important;
+    background: #fff !important;
+  }
+  .signoff-field label { color: #666 !important; }
+
+  /* Cert section */
+  .cert-section { border-color: #9ab8dd !important; background: #f5f8ff !important; }
+  .cert-section h2 { color: #2255aa !important; }
+  .cert-field input, .cert-field select {
+    background: #fff !important;
+    border-color: #9ab8dd !important;
+    color: #111 !important;
+  }
+  .cert-field label { color: #2255aa !important; }
+
+  /* Footer */
+  .print-footer {
+    display: flex !important;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 6px;
+    border-top: 1px solid #ccc;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7pt;
+    color: #888;
+  }
+  .doc-footer { display: none !important; }
+}
+
+/* hide print-only els on screen */
+.print-header, .print-footer { display: none; }
+
+/* ── DOC FOOTER ────────────────────────────────────── */
+.doc-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+  padding-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.doc-footer p {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+@media (max-width: 700px) {
+  .main { padding: 20px 16px 60px; }
+  .screen-header { padding: 20px 16px 18px; }
+  .summary-strip { grid-template-columns: repeat(3,1fr); }
+  .defect-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- SCREEN HEADER -->
+<header class="screen-header">
+  <div class="screen-header-left">
+    <div class="doc-badge">Phase 1 — Field Verification</div>
+    <h1>Structured Cabling <span>Verification</span> Checklist</h1>
+    <p class="subtitle">CAT 5 / CAT 5e / CAT 6 / CAT 6A &nbsp;·&nbsp; ANSI/TIA-568.2-D &nbsp;·&nbsp; New Construction Rough-In &nbsp;·&nbsp; KGS Field Form</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-secondary" onclick="clearAll()">Clear Form</button>
+    <button class="btn btn-primary" onclick="window.print()">⎙ Print / Export PDF</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- PRINT HEADER (hidden on screen) -->
+  <div class="print-header">
+    <div>
+      <div class="print-title">Structured Cabling <span>Field Verification</span> Checklist</div>
+      <div style="font-size:8pt; color:#555; margin-top:3px; font-family: 'IBM Plex Mono', monospace;">
+        CAT 5 / 5e / 6 / 6A &nbsp;·&nbsp; ANSI/TIA-568.2-D &nbsp;·&nbsp; Phase 1 Rough-In &nbsp;·&nbsp; KGS Field Form
+      </div>
+    </div>
+    <div class="print-meta">
+      <div id="print-project-name">Project: ___________________________</div>
+      <div id="print-idf">IDF / Panel: ___________________________</div>
+      <div id="print-date">Date: ___________________________</div>
+      <div id="print-tech">Tech: ___________________________</div>
+    </div>
+  </div>
+
+  <!-- SUMMARY STRIP -->
+  <div class="summary-strip">
+    <div class="stat-box">
+      <div class="stat-val total" id="stat-total">0</div>
+      <div class="stat-label">Total Drops</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val pass" id="stat-pass">0</div>
+      <div class="stat-label">Pass</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val fail" id="stat-fail">0</div>
+      <div class="stat-label">Fail</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val pending" id="stat-pend">0</div>
+      <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val pct" id="stat-pct">—</div>
+      <div class="stat-label">Pass Rate</div>
+    </div>
+  </div>
+
+  <!-- PROJECT INFO -->
+  <div class="section-label">Project Information</div>
+  <hr class="div">
+  <div class="project-grid">
+    <div class="field-group">
+      <label>Project Name</label>
+      <input type="text" id="proj-name" placeholder="e.g. Cypress Ridge Campus" oninput="updatePrintHeader()">
+    </div>
+    <div class="field-group">
+      <label>Project Address</label>
+      <input type="text" id="proj-addr" placeholder="Street / City / State">
+    </div>
+    <div class="field-group">
+      <label>Building / Floor</label>
+      <input type="text" id="proj-floor" placeholder="e.g. Bldg A / Floor 2">
+    </div>
+    <div class="field-group">
+      <label>IDF / Patch Panel</label>
+      <input type="text" id="proj-idf" placeholder="e.g. IDF-2A / PP-04" oninput="updatePrintHeader()">
+    </div>
+    <div class="field-group">
+      <label>Cable Category</label>
+      <select id="proj-cat" onchange="onCatChange(this)">
+        <optgroup label="── CAT 5 (Legacy) ──">
+          <option value="cat5">CAT 5 — UTP (Legacy / Not TIA-568.2-D)</option>
+        </optgroup>
+        <optgroup label="── CAT 5e ──">
+          <option value="cat5e">CAT 5e — UTP</option>
+          <option value="cat5e-stp">CAT 5e — STP/FTP</option>
+        </optgroup>
+        <optgroup label="── CAT 6 ──">
+          <option value="cat6" selected>CAT 6 — UTP</option>
+          <option value="cat6-stp">CAT 6 — STP/FTP</option>
+        </optgroup>
+        <optgroup label="── CAT 6A ──">
+          <option value="cat6a">CAT 6A — UTP</option>
+          <option value="cat6a-stp">CAT 6A — STP/FTP</option>
+        </optgroup>
+      </select>
+    </div>
+    <!-- CAT 5 warning banner (hidden by default) -->
+    <div id="cat5-warn" style="display:none; grid-column:1/-1;">
+      <div style="background:rgba(240,165,0,0.08); border:1px solid rgba(240,165,0,0.35); border-left:3px solid var(--amber); border-radius:4px; padding:10px 14px; font-size:12px; color:var(--text-dim);">
+        <strong style="color:var(--amber);">⚠ CAT 5 (non-e) Notice:</strong>
+        CAT 5 is not a recognized category in <strong>ANSI/TIA-568.2-D</strong> — it was removed in the TIA-568-C revision. Formal TIA-568 certification is not available for CAT 5. It is designed for <strong>100BASE-TX (100 Mbps)</strong>; 1000BASE-T (Gigabit) is not guaranteed. Link speed pass threshold for this checklist is set to 100 Mbps for CAT 5 rows. Use CAT 5e or higher for any new construction requiring a certifiable standard.
+      </div>
+    </div>
+    <div class="field-group">
+      <label>Wiring Standard</label>
+      <select id="proj-wire">
+        <option>T568-B</option>
+        <option>T568-A</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>Verification Tool</label>
+      <input type="text" id="proj-tool" placeholder="e.g. Fluke MicroScanner PoE">
+    </div>
+    <div class="field-group">
+      <label>Test Date</label>
+      <input type="date" id="proj-date" oninput="updatePrintHeader()">
+    </div>
+    <div class="field-group">
+      <label>Field Technician</label>
+      <input type="text" id="proj-tech" placeholder="Full name" oninput="updatePrintHeader()">
+    </div>
+  </div>
+
+  <!-- PRE-TEST CHECKLIST -->
+  <div class="pre-checklist">
+    <div class="section-label">Pre-Test Setup</div>
+    <h2>Before You Test the First Drop</h2>
+    <div class="check-grid" id="pre-checks">
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Tester powered on and battery confirmed &gt;50%</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Tester firmware / calibration date verified current</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Wiring standard confirmed: T568-B or T568-A (not mixed)</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Cable category confirmed and consistent across this IDF / panel</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Minimum acceptable link speed established per category: CAT 5 = 100 Mbps · CAT 5e/6/6A = 1 Gbps</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Drop ID labeling scheme established and communicated to crew</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Remote terminator / loopback adapter present at far end</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>PoE source switch/injector available for PoE-designated drops</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Red/green defect tape available for physical marking</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Field log sheet / this checklist accessible and ready to record</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Max horizontal run confirmed: ≤ 90m permanent link per TIA-568</span>
+      </label>
+      <label class="check-item" onclick="toggleCheck(this)">
+        <input type="checkbox">
+        <span>Pair untwist at terminations: CAT 5/5e ≤ 1.0" · CAT 6/6A ≤ 0.5" per TIA-568.2-D</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- PER-DROP TABLE -->
+  <div class="table-section">
+    <div class="table-header">
+      <div>
+        <div class="section-label">Per-Drop Verification Log</div>
+        <h2>Cable Segment Test Results</h2>
+      </div>
+      <div class="table-actions">
+        <button class="btn btn-add" onclick="addRow()">+ Add Drop</button>
+      </div>
+    </div>
+    <div class="drop-table-wrap">
+      <table class="drops" id="drop-table">
+        <thead>
+          <tr>
+            <th class="col-id">Drop ID</th>
+            <th class="col-loc">Location / Room</th>
+            <th style="width:72px;">Cable Cat</th>
+            <th class="col-wm">Wiremap</th>
+            <th class="col-sp">Split Pair</th>
+            <th class="col-len">Length (ft)</th>
+            <th class="col-poe">PoE Class</th>
+            <th class="col-pv">PoE Voltage</th>
+            <th class="col-ls">Link Speed</th>
+            <th class="col-res">Result</th>
+            <th class="col-note">Defect / Notes</th>
+            <th class="col-init">Init.</th>
+            <th class="col-del"></th>
+          </tr>
+        </thead>
+        <tbody id="drop-tbody">
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <button class="btn btn-add" onclick="addRow()">+ Add Drop</button>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dim);">
+        Click Result badge to toggle Pass / Fail / Pending
+      </span>
+    </div>
+  </div>
+
+  <!-- DEFECT LOG -->
+  <div class="defect-section">
+    <div class="section-label">Corrective Actions</div>
+    <h2>Defect &amp; Resolution Log</h2>
+    <div style="margin-bottom:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <button class="btn btn-add" onclick="addDefect()" style="font-size:12px; padding:6px 14px;">+ Add Defect</button>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dim);">
+        Log each failed drop, root cause, and corrective action taken before wall closure.
+      </span>
+    </div>
+    <div style="display:grid; grid-template-columns: 90px 120px 1fr 140px 80px; gap:8px; margin-bottom:6px;">
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim);">Drop ID</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim);">Defect Type</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim);">Description / Root Cause</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim);">Corrective Action</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim);">Re-Test</span>
+    </div>
+    <div class="defect-list" id="defect-list">
+      <div class="defect-empty" id="defect-empty">No defects logged. Add a row when a drop fails.</div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 CERT TRACKER -->
+  <div class="cert-section">
+    <div class="section-label">Phase 2 Reference</div>
+    <h2>Formal TIA-568 Certification — Closeout Planning</h2>
+    <p>Complete this section when scheduling the Fluke DSX rental for final certification. Not part of Phase 1 deliverables.</p>
+    <div class="cert-grid">
+      <div class="cert-field">
+        <label>Certification Tester</label>
+        <input type="text" placeholder="e.g. Fluke DSX-600">
+      </div>
+      <div class="cert-field">
+        <label>Rental Source</label>
+        <input type="text" placeholder="e.g. TestEquity, Microlease">
+      </div>
+      <div class="cert-field">
+        <label>Rental Week Scheduled</label>
+        <input type="date">
+      </div>
+      <div class="cert-field">
+        <label>Cert Performed By</label>
+        <select>
+          <option value="">Select...</option>
+          <option>In-house tech (rental unit)</option>
+          <option>Certified cabling contractor</option>
+          <option>RCDD-credentialed firm</option>
+        </select>
+      </div>
+      <div class="cert-field">
+        <label>Report Format</label>
+        <select>
+          <option>Fluke LinkWare Live (PDF + XML)</option>
+          <option>IDEAL AnyWARE Cloud</option>
+          <option>Other — specify in notes</option>
+        </select>
+      </div>
+      <div class="cert-field">
+        <label>Manufacturer Warranty</label>
+        <select>
+          <option value="">N/A</option>
+          <option>CommScope — Applied for</option>
+          <option>Panduit — Applied for</option>
+          <option>Belden — Applied for</option>
+          <option>Legrand — Applied for</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGN-OFF -->
+  <div class="signoff-section">
+    <div class="section-label">Phase 1 Sign-Off</div>
+    <h2>Field Verification Authorization</h2>
+    <div class="signoff-grid">
+      <div class="signoff-field">
+        <label>Field Technician Name</label>
+        <input type="text" id="so-tech" placeholder="Print full name">
+      </div>
+      <div class="signoff-field">
+        <label>Technician Signature</label>
+        <input class="sig-line" type="text" placeholder="Sign above">
+      </div>
+      <div class="signoff-field">
+        <label>Date Completed</label>
+        <input type="date" id="so-date">
+      </div>
+      <div class="signoff-field">
+        <label>Supervising Foreman</label>
+        <input type="text" placeholder="Print full name">
+      </div>
+      <div class="signoff-field">
+        <label>Foreman Signature</label>
+        <input class="sig-line" type="text" placeholder="Sign above">
+      </div>
+      <div class="signoff-field">
+        <label>Phase 1 Status</label>
+        <select id="so-status">
+          <option value="in-progress">In Progress</option>
+          <option value="complete">Complete — All Drops Passed</option>
+          <option value="complete-defects">Complete — Open Defects Remain</option>
+          <option value="hold">On Hold — Pending Re-Test</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINT FOOTER -->
+  <div class="print-footer">
+    <span>KGS Field Form · Structured Cabling Phase 1 Verification · CAT 5/5e/6/6A · ANSI/TIA-568.2-D</span>
+    <span>Page 1 of 1</span>
+    <span id="print-footer-date"></span>
+  </div>
+
+  <div class="doc-footer">
+    <p>KGS Technical Field Form · Structured Cabling Verification Checklist · CAT 5 / 5e / 6 / 6A · ANSI/TIA-568.2-D</p>
+    <p>Companion to: CAT 6 Field Validation Package Rev 1.1 · May 2026</p>
+  </div>
+
+</div><!-- end .main -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── ROW MANAGEMENT ──────────────────────────────────
+let rowCount = 0;
+
+function addRow(id) {
+  rowCount++;
+  const tbody = document.getElementById('drop-tbody');
+  const tr = document.createElement('tr');
+  tr.id = 'row-' + rowCount;
+  tr.innerHTML = `
+    <td class="col-id"><input type="text" placeholder="FL2-IDF-D${String(rowCount).padStart(2,'0')}" onchange="updateSummary()"></td>
+    <td class="col-loc"><input type="text" placeholder="Rm / Area"></td>
+    <td style="width:72px;">
+      <select class="bool-pend" onchange="onRowCatChange(this); autoResult(this.closest('tr')); updateSummary()" title="Cable category for this drop">
+        <option value="cat6">CAT 6</option>
+        <option value="cat6a">CAT 6A</option>
+        <option value="cat5e">CAT 5e</option>
+        <option value="cat5">CAT 5</option>
+      </select>
+    </td>
+    <td class="col-wm">
+      <select class="bool-pend" onchange="styleSelect(this); autoResult(this.closest('tr')); updateSummary()">
+        <option value="">—</option>
+        <option value="pass">✔ Pass</option>
+        <option value="fail">✘ Fail</option>
+      </select>
+    </td>
+    <td class="col-sp">
+      <select class="bool-pend" onchange="styleSelect(this); autoResult(this.closest('tr')); updateSummary()">
+        <option value="">—</option>
+        <option value="pass">✔ None</option>
+        <option value="fail">✘ Found</option>
+      </select>
+    </td>
+    <td class="col-len"><input type="number" placeholder="—" min="0" max="300" onchange="flagLength(this); autoResult(this.closest('tr')); updateSummary()"></td>
+    <td class="col-poe">
+      <select onchange="updateSummary()">
+        <option value="na">N/A</option>
+        <option value="af">af (15W)</option>
+        <option value="at">at (30W)</option>
+        <option value="bt3">bt T3 (60W)</option>
+        <option value="bt4">bt T4 (90W)</option>
+      </select>
+    </td>
+    <td class="col-pv"><input type="number" placeholder="V" min="0" max="60" step="0.1" onchange="flagVoltage(this)"></td>
+    <td class="col-ls">
+      <select class="bool-pend" onchange="styleSelect(this); autoResult(this.closest('tr')); updateSummary()">
+        <option value="">—</option>
+        <option value="pass1g">1G ✔</option>
+        <option value="pass100">100M ✔</option>
+        <option value="warn100">100M ⚠</option>
+        <option value="fail">No Link ✘</option>
+      </select>
+    </td>
+    <td class="col-res">
+      <span class="result-badge pending" onclick="cycleResult(this)">PENDING</span>
+    </td>
+    <td class="col-note"><input type="text" placeholder="—"></td>
+    <td class="col-init"><input type="text" placeholder="—" maxlength="4" style="width:44px;"></td>
+    <td class="col-del"><button class="btn btn-danger" onclick="deleteRow(${rowCount})" title="Delete row">✕</button></td>
+  `;
+  tbody.appendChild(tr);
+  updateSummary();
+}
+
+function deleteRow(id) {
+  const row = document.getElementById('row-' + id);
+  if (row) row.remove();
+  updateSummary();
+}
+
+// ── SELECT STYLING ───────────────────────────────────
+function styleSelect(sel) {
+  sel.className = '';
+  const v = sel.value;
+  if (v === 'pass') sel.classList.add('bool-pass');
+  else if (v === 'fail') sel.classList.add('bool-fail');
+  else if (v === 'warn') sel.classList.add('bool-pend');
+  else sel.classList.add('bool-pend');
+}
+
+// ── CATEGORY HELPERS ─────────────────────────────────
+function getProjectCat() {
+  const s = document.getElementById('proj-cat');
+  return s ? s.value : 'cat6';
+}
+
+// When project-level category changes, sync default on new rows and show/hide CAT 5 warning
+function onCatChange(sel) {
+  const v = sel.value;
+  document.getElementById('cat5-warn').style.display = v === 'cat5' ? 'block' : 'none';
+  // Sync all existing rows that haven't been manually changed
+  document.querySelectorAll('#drop-tbody .col-ls select').forEach(ls => {
+    const rowCatSel = ls.closest('tr').querySelector('select[onchange*="onRowCatChange"]');
+    if (rowCatSel) rowCatSel.value = v;
+  });
+  updateSummary();
+}
+
+// When a row's cable cat changes, re-evaluate that row's link speed label
+function onRowCatChange(catSel) {
+  const row = catSel.closest('tr');
+  const lsSel = row.querySelector('.col-ls select');
+  if (!lsSel) return;
+  // If 100M was marked pass but cat changed to 5e/6, demote to warn
+  if (['cat5e','cat6','cat6a'].includes(catSel.value) && lsSel.value === 'pass100') {
+    lsSel.value = 'warn100';
+    styleSelect(lsSel);
+  }
+  // If 100M was warn but cat changed to cat5, promote to pass
+  if (catSel.value === 'cat5' && lsSel.value === 'warn100') {
+    lsSel.value = 'pass100';
+    styleSelect(lsSel);
+  }
+}
+
+// ── AUTO RESULT ──────────────────────────────────────
+function autoResult(row) {
+  const wm  = row.querySelector('.col-wm select');
+  const sp  = row.querySelector('.col-sp select');
+  const ls  = row.querySelector('.col-ls select');
+  const catSel = row.querySelector('select[onchange*="onRowCatChange"]');
+  const badge  = row.querySelector('.result-badge');
+  if (!badge) return;
+
+  const cat = catSel ? catSel.value : getProjectCat();
+  const isCat5 = cat === 'cat5';
+
+  // Determine link speed outcome based on category
+  let lsResult = 'pending';
+  if (ls && ls.value) {
+    if (ls.value === 'fail') lsResult = 'fail';
+    else if (ls.value === 'pass1g') lsResult = 'pass';
+    else if (ls.value === 'pass100') lsResult = isCat5 ? 'pass' : 'fail';
+    else if (ls.value === 'warn100') lsResult = isCat5 ? 'pass' : 'fail';
+    else lsResult = 'pending';
+  }
+
+  const wmVal  = wm  ? wm.value  : '';
+  const spVal  = sp  ? sp.value  : '';
+
+  const anyFail = wmVal === 'fail' || spVal === 'fail' || lsResult === 'fail';
+  const allSet  = wmVal !== '' && spVal !== '' && ls && ls.value !== '';
+
+  if (anyFail) {
+    setBadge(badge, 'fail');
+    row.className = 'row-fail';
+  } else if (allSet) {
+    setBadge(badge, 'pass');
+    row.className = 'row-pass';
+  } else {
+    setBadge(badge, 'pending');
+    row.className = '';
+  }
+  updateSummary();
+}
+
+function setBadge(badge, state) {
+  badge.className = 'result-badge ' + state;
+  badge.textContent = state === 'pass' ? 'PASS' : state === 'fail' ? 'FAIL' : 'PENDING';
+}
+
+function cycleResult(badge) {
+  const states = ['pending','pass','fail'];
+  const cur = states.indexOf([...badge.classList].find(c => states.includes(c)));
+  const next = states[(cur + 1) % states.length];
+  setBadge(badge, next);
+  const row = badge.closest('tr');
+  row.className = next === 'fail' ? 'row-fail' : next === 'pass' ? 'row-pass' : '';
+  updateSummary();
+}
+
+// ── FIELD VALIDATION ─────────────────────────────────
+function flagLength(input) {
+  const v = parseFloat(input.value);
+  if (!isNaN(v) && v > 295) {          // 295ft ≈ 90m
+    input.style.color = 'var(--red)';
+    input.title = 'WARNING: exceeds 90m (295ft) TIA-568 limit';
+    showToast('⚠ Length exceeds 90m limit — investigate re-route');
+  } else if (!isNaN(v) && v > 275) {   // soft warning at 275ft ≈ 84m
+    input.style.color = 'var(--amber)';
+    input.title = 'Approaching 90m limit — verify route';
+  } else {
+    input.style.color = 'var(--white)';
+    input.title = '';
+  }
+}
+
+function flagVoltage(input) {
+  const v = parseFloat(input.value);
+  if (!isNaN(v) && (v < 44 || v > 57)) {
+    input.style.color = 'var(--red)';
+    input.title = 'Voltage out of PoE range (44–57V DC)';
+  } else {
+    input.style.color = 'var(--white)';
+    input.title = '';
+  }
+}
+
+// ── SUMMARY ──────────────────────────────────────────
+function updateSummary() {
+  const badges = document.querySelectorAll('#drop-tbody .result-badge');
+  let pass = 0, fail = 0, pend = 0;
+  badges.forEach(b => {
+    if (b.classList.contains('pass')) pass++;
+    else if (b.classList.contains('fail')) fail++;
+    else pend++;
+  });
+  const total = pass + fail + pend;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-pass').textContent  = pass;
+  document.getElementById('stat-fail').textContent  = fail;
+  document.getElementById('stat-pend').textContent  = pend;
+  document.getElementById('stat-pct').textContent   = total > 0 ? Math.round(pass/total*100)+'%' : '—';
+}
+
+// ── PRE-CHECK TOGGLE ─────────────────────────────────
+function toggleCheck(label) {
+  setTimeout(() => {
+    const cb = label.querySelector('input[type="checkbox"]');
+    label.classList.toggle('checked', cb.checked);
+  }, 0);
+}
+
+// ── DEFECT LOG ───────────────────────────────────────
+let defectCount = 0;
+function addDefect() {
+  defectCount++;
+  const list = document.getElementById('defect-list');
+  const empty = document.getElementById('defect-empty');
+  if (empty) empty.remove();
+
+  const div = document.createElement('div');
+  div.className = 'defect-row';
+  div.id = 'defect-' + defectCount;
+  div.innerHTML = `
+    <input type="text" placeholder="Drop ID">
+    <select>
+      <option value="">Select type...</option>
+      <option>Open pair</option>
+      <option>Short circuit</option>
+      <option>Reversed pair</option>
+      <option>Split pair</option>
+      <option>Exceeds 90m</option>
+      <option>Link speed &lt;1G</option>
+      <option>PoE voltage fault</option>
+      <option>Physical damage</option>
+      <option>Other</option>
+    </select>
+    <input type="text" placeholder="Root cause / description">
+    <input type="text" placeholder="Action taken">
+    <select>
+      <option value="">Re-test...</option>
+      <option>Pass — Resolved</option>
+      <option>Fail — Pending</option>
+      <option>Replaced</option>
+    </select>
+  `;
+  list.appendChild(div);
+}
+
+// ── PRINT HEADER SYNC ────────────────────────────────
+function updatePrintHeader() {
+  const pn = document.getElementById('proj-name').value || '___________________________';
+  const idf= document.getElementById('proj-idf').value  || '___________________________';
+  const dt = document.getElementById('proj-date').value;
+  const tech= document.getElementById('proj-tech').value || '___________________________';
+  document.getElementById('print-project-name').textContent = 'Project: ' + pn;
+  document.getElementById('print-idf').textContent = 'IDF / Panel: ' + idf;
+  document.getElementById('print-date').textContent = 'Date: ' + (dt || '___________________________');
+  document.getElementById('print-tech').textContent = 'Tech: ' + tech;
+  document.getElementById('print-footer-date').textContent = 'Printed: ' + new Date().toLocaleDateString();
+}
+
+// ── TOAST ────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── CLEAR ─────────────────────────────────────────────
+function clearAll() {
+  if (!confirm('Clear all drop entries and reset the form?')) return;
+  document.getElementById('drop-tbody').innerHTML = '';
+  document.getElementById('defect-list').innerHTML = '<div class="defect-empty" id="defect-empty">No defects logged. Add a row when a drop fails.</div>';
+  rowCount = 0; defectCount = 0;
+  document.querySelectorAll('.check-item').forEach(l => {
+    l.classList.remove('checked');
+    l.querySelector('input[type="checkbox"]').checked = false;
+  });
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"]').forEach(i => i.value = '');
+  document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+  updateSummary();
+  showToast('Form cleared');
+}
+
+// ── INIT ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Seed 5 rows to start — default cat from project selector
+  for (let i = 0; i < 5; i++) addRow();
+  // Set today's date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('proj-date').value = today;
+  document.getElementById('so-date').value = today;
+  updatePrintHeader();
+  document.getElementById('print-footer-date').textContent = 'Printed: ' + new Date().toLocaleDateString();
+});
+</script>
+</body>
+</html>

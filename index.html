@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAT 6 Field Validation Package — KGS</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d1117">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+  :root {
+    --ink: #0d1117;
+    --surface: #161b22;
+    --card: #1c2330;
+    --border: #2a3444;
+    --amber: #f0a500;
+    --amber-dim: #c47f00;
+    --amber-glow: rgba(240,165,0,0.12);
+    --green: #3fb950;
+    --red: #f85149;
+    --blue: #58a6ff;
+    --muted: #8b9ab0;
+    --text: #cdd9e5;
+    --text-dim: #768390;
+    --white: #e6edf3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ─────────────────────────────────── */
+  header {
+    background: linear-gradient(135deg, #0d1117 0%, #131922 60%, #1a2436 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 48px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(240,165,0,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  header::after {
+    content: 'TIA-568';
+    position: absolute;
+    right: 48px; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 96px;
+    font-weight: 800;
+    color: rgba(240,165,0,0.05);
+    letter-spacing: -2px;
+    pointer-events: none;
+    user-select: none;
+  }
+  .doc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--amber-glow);
+    border: 1px solid rgba(240,165,0,0.3);
+    border-radius: 3px;
+    padding: 4px 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--amber);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .doc-badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--amber);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; } 50% { opacity:0.3; }
+  }
+  h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  h1 span { color: var(--amber); }
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+  .meta-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .meta-item strong {
+    color: var(--amber);
+    font-weight: 600;
+  }
+
+  /* ── TABS ───────────────────────────────────── */
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    padding: 0 48px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 22px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+    user-select: none;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    color: var(--amber);
+    border-bottom-color: var(--amber);
+  }
+
+  /* ── CONTENT ────────────────────────────────── */
+  .content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 48px 80px;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── SECTION HEADINGS ───────────────────────── */
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 6px;
+  }
+  h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 36px 0;
+  }
+
+  /* ── CARDS ──────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 22px 26px;
+    margin-bottom: 20px;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  /* ── CALLOUT BOXES ──────────────────────────── */
+  .callout {
+    display: flex;
+    gap: 14px;
+    padding: 16px 20px;
+    border-radius: 5px;
+    margin: 20px 0;
+    border-left: 3px solid;
+  }
+  .callout-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .callout-body { flex: 1; }
+  .callout-body strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .callout-body p { font-size: 13px; line-height: 1.5; color: var(--text-dim); }
+  .callout.warn {
+    background: rgba(240,165,0,0.07);
+    border-color: var(--amber);
+  }
+  .callout.warn .callout-body strong { color: var(--amber); }
+  .callout.danger {
+    background: rgba(248,81,73,0.07);
+    border-color: var(--red);
+  }
+  .callout.danger .callout-body strong { color: var(--red); }
+  .callout.success {
+    background: rgba(63,185,80,0.07);
+    border-color: var(--green);
+  }
+  .callout.success .callout-body strong { color: var(--green); }
+  .callout.info {
+    background: rgba(88,166,255,0.07);
+    border-color: var(--blue);
+  }
+  .callout.info .callout-body strong { color: var(--blue); }
+
+  /* ── SOP STEPS ──────────────────────────────── */
+  .step-list { counter-reset: steps; list-style: none; }
+  .step-item {
+    counter-increment: steps;
+    display: flex;
+    gap: 18px;
+    margin-bottom: 16px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .step-item:nth-child(1) { animation-delay: 0.05s; }
+  .step-item:nth-child(2) { animation-delay: 0.1s; }
+  .step-item:nth-child(3) { animation-delay: 0.15s; }
+  .step-item:nth-child(4) { animation-delay: 0.2s; }
+  .step-item:nth-child(5) { animation-delay: 0.25s; }
+  .step-item:nth-child(6) { animation-delay: 0.3s; }
+  .step-item:nth-child(7) { animation-delay: 0.35s; }
+  .step-item:nth-child(8) { animation-delay: 0.4s; }
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(10px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  .step-num {
+    width: 34px; height: 34px;
+    flex-shrink: 0;
+    background: var(--amber-glow);
+    border: 1px solid rgba(240,165,0,0.35);
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--amber);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step-body { flex: 1; padding-top: 6px; }
+  .step-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+  }
+  .step-desc { font-size: 13.5px; color: var(--text-dim); line-height: 1.55; }
+  .step-desc code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: rgba(88,166,255,0.1);
+    color: var(--blue);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+  .step-connector {
+    width: 1px;
+    background: var(--border);
+    margin: 0 0 0 16px;
+    height: 12px;
+  }
+
+  /* ── PASS/FAIL TABLE ────────────────────────── */
+  .pf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-top: 16px;
+  }
+  .pf-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .pf-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(42,52,68,0.6);
+    vertical-align: top;
+  }
+  .pf-table tr:last-child td { border-bottom: none; }
+  .pf-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .badge-pass { background: rgba(63,185,80,0.15); color: var(--green); }
+  .badge-fail { background: rgba(248,81,73,0.15); color: var(--red); }
+  .badge-warn { background: rgba(240,165,0,0.15); color: var(--amber); }
+  .badge-cert { background: rgba(88,166,255,0.15); color: var(--blue); }
+  .badge-na   { background: rgba(139,154,176,0.12); color: var(--muted); }
+
+  /* ── TOOL CARDS ─────────────────────────────── */
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .tool-card:hover {
+    border-color: rgba(240,165,0,0.3);
+    transform: translateY(-2px);
+  }
+  .tool-card.recommended {
+    border-color: rgba(240,165,0,0.45);
+    box-shadow: 0 0 0 1px rgba(240,165,0,0.15);
+  }
+  .tool-header {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .tool-rec-badge {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    background: var(--amber-glow);
+    border: 1px solid rgba(240,165,0,0.3);
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .tool-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.01em;
+  }
+  .tool-maker {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .tool-price {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--amber);
+    margin-top: 8px;
+  }
+  .tool-price span { font-size: 13px; color: var(--text-dim); }
+  .tool-body { padding: 16px 22px; }
+  .cap-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(42,52,68,0.5);
+    font-size: 13px;
+  }
+  .cap-row:last-child { border-bottom: none; }
+  .cap-label { color: var(--text-dim); }
+  .cap-val { font-weight: 500; }
+  .cap-val.yes { color: var(--green); }
+  .cap-val.no { color: var(--red); }
+  .cap-val.partial { color: var(--amber); }
+  .tool-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  /* ── COMPARISON TABLE ───────────────────────── */
+  .comp-wrap { overflow-x: auto; margin-top: 20px; }
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 700px;
+  }
+  .comp-table th {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    padding: 10px 14px;
+    text-align: left;
+    background: rgba(240,165,0,0.08);
+    border-bottom: 2px solid rgba(240,165,0,0.3);
+  }
+  .comp-table th:first-child { color: var(--amber); }
+  .comp-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comp-table .param-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .tick { color: var(--green); font-size: 16px; }
+  .cross { color: var(--red); font-size: 16px; }
+  .half { color: var(--amber); font-size: 14px; }
+
+  /* ── SPEC LANGUAGE ──────────────────────────── */
+  .spec-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    position: relative;
+  }
+  .spec-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 10px;
+  }
+  .spec-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #a8b5c4;
+    white-space: pre-wrap;
+  }
+  .spec-text .kw { color: var(--blue); font-weight: 600; }
+  .spec-text .ref { color: var(--amber); }
+  .copy-btn {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: rgba(240,165,0,0.1);
+    border: 1px solid rgba(240,165,0,0.25);
+    color: var(--amber);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .copy-btn:hover { background: rgba(240,165,0,0.2); }
+
+  /* ── TWO-COLUMN LAYOUT ──────────────────────── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  @media (max-width: 720px) {
+    .two-col { grid-template-columns: 1fr; }
+    .content { padding: 24px 20px 60px; }
+    header { padding: 24px 20px 20px; }
+    .tab-bar { padding: 0 20px; }
+    header::after { display: none; }
+  }
+
+  /* ── FOOTER ─────────────────────────────────── */
+  .doc-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    gap: 12px;
+  }
+  .doc-footer p {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .doc-footer a { color: var(--amber); text-decoration: none; }
+
+  /* ── ESCALATION PATH ────────────────────────── */
+  .escalation-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin-top: 20px;
+    overflow: hidden;
+  }
+  .esc-stage {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-right: none;
+    padding: 16px;
+    position: relative;
+    min-width: 0;
+  }
+  .esc-stage:last-child { border-right: 1px solid var(--border); border-radius: 0 6px 6px 0; }
+  .esc-stage:first-child { border-radius: 6px 0 0 6px; }
+  .esc-stage::after {
+    content: '›';
+    position: absolute;
+    right: -12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: var(--amber);
+    z-index: 2;
+  }
+  .esc-stage:last-child::after { display: none; }
+  .esc-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .esc-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+  }
+  .esc-desc {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+  .esc-tool {
+    margin-top: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--amber);
+    background: var(--amber-glow);
+    border: 1px solid rgba(240,165,0,0.2);
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+  #panel-checklist { margin: -1px 0 0; }
+  #checklist-frame { display:block; width:100%; height:calc(100vh - 70px); min-height:640px; border:1px solid var(--border); border-radius:6px; background:#fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="doc-badge">KGS Technical Field Reference</div>
+  <h1>CAT 6 <span>Field Validation</span> Package</h1>
+  <p class="subtitle">Standard Operating Procedure · Tool Selection Guide · Closeout Specification Language</p>
+  <div class="meta-row">
+    <span class="meta-item"><strong>Standard:</strong> ANSI/TIA-568.2-D</span>
+    <span class="meta-item"><strong>Cable:</strong> CAT 6 / TIA-568-B</span>
+    <span class="meta-item"><strong>Context:</strong> New Construction / Rough-In</span>
+    <span class="meta-item"><strong>Rev:</strong> 1.0 · May 2026</span>
+    <span class="meta-item"><strong>App:</strong> Version 00.01.000</span>
+  </div>
+</header>
+
+<nav class="tab-bar">
+  <div class="tab active" data-tab="sop" onclick="switchTab('sop', this)">① Field SOP</div>
+  <div class="tab" data-tab="checklist" onclick="switchTab('checklist', this)">② Field Checklist</div>
+  <div class="tab" data-tab="tools" onclick="switchTab('tools', this)">③ Tool Comparison</div>
+  <div class="tab" data-tab="spec" onclick="switchTab('spec', this)">④ Spec Language</div>
+</nav>
+
+<div class="content">
+
+  <!-- ════════════════════════════════════════════
+       PANEL 1 — FIELD SOP
+  ════════════════════════════════════════════ -->
+  <div id="panel-sop" class="panel active">
+
+    <div class="section-label">Standard Operating Procedure</div>
+    <h2>CAT 6 Field Validation — New Construction</h2>
+    <p style="color:var(--text-dim); font-size:14px; margin-bottom:24px;">Two-phase approach: in-progress verification with budget tooling, then formal TIA-568 certification at closeout. Catches 90% of defects before walls close.</p>
+
+    <div class="callout warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <strong>Certification vs. Verification — Know the Difference</strong>
+        <p>Budget tools (<$500) perform <em>verification</em>: wiremap, length, PoE detection, and link speed. They do NOT produce TIA-568 compliant certification reports, which require frequency-domain measurements (NEXT, insertion loss, return loss, delay skew). Formal certification requires a Level IIIe/IV accuracy tester or equivalent rental. Both phases are required for a complete closeout package.</p>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+    <h3>Phase 1 — Rough-In Verification (In-Progress)</h3>
+    <p style="color:var(--text-dim); font-size:13px; margin-bottom:20px;">Performed by in-house tech using budget verification tool (Klein VDV Scout Pro 3 or Fluke MicroScanner PoE). Test each run immediately after termination, before walls are closed. Log results by drop ID.</p>
+
+    <ol class="step-list">
+      <li class="step-item">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Confirm Termination Standard</div>
+          <div class="step-desc">Verify all terminations follow <code>T568-B</code> wiring standard (preferred for commercial new construction) or <code>T568-A</code> if AHJ or owner spec requires it. Do NOT mix standards on the same project. Confirm at both the jack/outlet end and the patch panel end.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Attach Remote ID / Loopback</div>
+          <div class="step-desc">Connect the tester's remote terminator or loopback adapter to the far end of the cable run. Assign a unique Drop ID to each run and log it on the field sheet (e.g., <code>FL2-IDF-D04</code>). Use label tape on the jack and panel port for traceability.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Run Wiremap / Pinout Test</div>
+          <div class="step-desc">Verify all 8 conductors terminate correctly per the selected standard. Look for: open pairs, short circuits, reversed pairs, and split pairs. A split pair (e.g., pin 1-4 / 2-3) will pass a basic continuity test but will fail crosstalk — this is the most commonly missed defect at this phase.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Measure Cable Length (TDR)</div>
+          <div class="step-desc">TIA-568 limits horizontal runs to <code>90 meters</code> (295 ft) permanent link, plus up to 10m for patch cords (100m total channel). Record measured length per run. Flag any run approaching 85m for re-routing consideration prior to final certification.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <div class="step-title">Verify PoE Compatibility (if applicable)</div>
+          <div class="step-desc">For drops serving IP cameras, APs, VoIP phones, or IoT devices: use a PoE tester to identify PoE class (802.3af / 802.3at / 802.3bt). Verify voltage present (nominally <code>48V DC</code>) and that power is applied on the correct pair set. Document PoE class per drop for equipment planning.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">06</div>
+        <div class="step-body">
+          <div class="step-title">Confirm Link Speed Negotiation</div>
+          <div class="step-desc">Connect a live switch port and verify link negotiation at <code>1000BASE-T</code> (Gigabit). If link only negotiates at 100 Mbps, investigate: likely a split pair, excessive untwisting at termination (&gt;0.5" per TIA-568), or physical damage. Do NOT accept any run that won't negotiate 1G on a live CAT 6 link.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">07</div>
+        <div class="step-body">
+          <div class="step-title">Log Results &amp; Tag Defects</div>
+          <div class="step-desc">Mark every drop PASS or FAIL on the field sheet. Tag failed drops physically with red tape at both ends. Resolve all failures before wall close or ceiling tile. Common failures: split pairs → re-terminate; open pair → inspect for wire nick or poor punch-down; length over 90m → re-route or add intermediate closet.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">08</div>
+        <div class="step-body">
+          <div class="step-title">Escalate to Phase 2 at Closeout</div>
+          <div class="step-desc">All drops with Phase 1 PASS status are candidates for formal TIA-568 certification. Schedule the Fluke DSX rental (or certified contractor walkdown) for the final week of construction, after furniture is in and all patch cords are installed in final configuration.</div>
+        </div>
+      </li>
+    </ol>
+
+    <hr class="section-divider">
+    <h3>Phase 2 — Formal TIA-568 Certification (Closeout)</h3>
+    <p style="color:var(--text-dim); font-size:13px; margin-bottom:16px;">Requires a Level IIIe / IV accuracy field tester (Fluke DSX-600 or equivalent). Tests the <em>permanent link</em> configuration (jack to patch panel, excluding patch cords).</p>
+
+    <div class="two-col">
+      <div class="card">
+        <h3>Required Test Suite — CAT 6 Permanent Link</h3>
+        <table class="pf-table">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>TIA-568 Limit</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Wiremap</td><td>Per T568-B/A</td><td><span class="badge badge-pass">Required</span></td></tr>
+            <tr><td>Length</td><td>≤ 90m permanent link</td><td><span class="badge badge-pass">Required</span></td></tr>
+            <tr><td>Insertion Loss</td><td>≤ 21.3 dB @ 100 MHz</td><td><span class="badge badge-cert">Cert Only</span></td></tr>
+            <tr><td>NEXT (Near-End Crosstalk)</td><td>≥ 44.3 dB @ 100 MHz</td><td><span class="badge badge-cert">Cert Only</span></td></tr>
+            <tr><td>PS-NEXT</td><td>≥ 42.3 dB @ 100 MHz</td><td><span class="badge badge-cert">Cert Only</span></td></tr>
+            <tr><td>ACRF / ELFEXT</td><td>≥ 23.3 dB @ 100 MHz</td><td><span class="badge badge-cert">Cert Only</span></td></tr>
+            <tr><td>PS-ACRF</td><td>≥ 20.3 dB @ 100 MHz</td><td><span class="badge badge-cert">Cert Only</span></td></tr>
+            <tr><td>Return Loss</td><td>≥ 20.1 dB @ 100 MHz</td><td><span class="badge badge-cert">Cert Only</span></td></tr>
+            <tr><td>Propagation Delay</td><td>≤ 555 ns @ 100 MHz</td><td><span class="badge badge-cert">Cert Only</span></td></tr>
+            <tr><td>Delay Skew</td><td>≤ 50 ns</td><td><span class="badge badge-cert">Cert Only</span></td></tr>
+            <tr><td>DC Resistance</td><td>≤ 21.0 Ω per conductor</td><td><span class="badge badge-warn">Verify+</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <h3>Certification Escalation Path</h3>
+          <div style="margin-top:12px;">
+            <div class="escalation-row">
+              <div class="esc-stage">
+                <div class="esc-num">STAGE 1</div>
+                <div class="esc-title">In-House Verify</div>
+                <div class="esc-desc">Wiremap, length, PoE spot check on every drop</div>
+                <span class="esc-tool">Klein / Fluke MicroScanner</span>
+              </div>
+              <div class="esc-stage">
+                <div class="esc-num">STAGE 2</div>
+                <div class="esc-title">Rent & Certify</div>
+                <div class="esc-desc">Full DSX sweep at closeout. All 11 parameters</div>
+                <span class="esc-tool">Fluke DSX-600 Rental</span>
+              </div>
+              <div class="esc-stage">
+                <div class="esc-num">STAGE 3</div>
+                <div class="esc-title">Submit Reports</div>
+                <div class="esc-desc">LinkWare Live reports to owner &amp; engineer of record</div>
+                <span class="esc-tool">PDF + XML archive</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="callout success">
+          <div class="callout-icon">✅</div>
+          <div class="callout-body">
+            <strong>Rental Economics</strong>
+            <p>A Fluke DSX-600 rents for ~$300–500/week from Microlease, TestEquity, or local AV/low-voltage vendors. For most construction projects, one week covers the full closeout sweep. Total cost: 5–7% of buying the instrument outright.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PANEL 2 — TOOL COMPARISON
+  ════════════════════════════════════════════ -->
+  <!-- ════════════════════════════════════════════
+       PANEL 2 — FIELD CHECKLIST (from "Structured Cabling Field Verification Checklist", embedded unchanged)
+  ════════════════════════════════════════════ -->
+  <div id="panel-checklist" class="panel">
+    <iframe id="checklist-frame" src="checklist.html" title="Structured Cabling Field Verification Checklist" loading="eager"></iframe>
+  </div>
+
+  <div id="panel-tools" class="panel">
+
+    <div class="section-label">Tool Selection Guide</div>
+    <h2>Field Tester Comparison Matrix</h2>
+    <p style="color:var(--text-dim); font-size:14px; margin-bottom:24px;">Four tools across three budget tiers. The two-tool strategy (Scout Pro 3 + DSX-600 rental) provides the best cost-to-coverage ratio for new construction with formal closeout requirements.</p>
+
+    <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-name">VDV Scout Pro 3</div>
+          <div class="tool-maker">Klein Tools</div>
+          <div class="tool-price">~$130 <span>purchase</span></div>
+        </div>
+        <div class="tool-body">
+          <div class="cap-row"><span class="cap-label">Wiremap / Pinout</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">Split Pair Detection</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">TDR Length</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">PoE Detection</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">PoE Class / Wattage</span><span class="cap-val partial">⚠ Basic</span></div>
+          <div class="cap-row"><span class="cap-label">Link Speed</span><span class="cap-val no">✘ No</span></div>
+          <div class="cap-row"><span class="cap-label">Digital Report Output</span><span class="cap-val no">✘ No</span></div>
+          <div class="cap-row"><span class="cap-label">TIA-568 Certification</span><span class="cap-val no">✘ No</span></div>
+          <div class="tool-note">Best for: fast pinout/continuity sweep during rough-in. Rugged, simple, zero learning curve. Ideal first line of defense before walls close.</div>
+        </div>
+      </div>
+
+      <div class="tool-card recommended">
+        <div class="tool-header">
+          <span class="tool-rec-badge">★ Recommended</span>
+          <div class="tool-name">MicroScanner PoE</div>
+          <div class="tool-maker">Fluke Networks</div>
+          <div class="tool-price">~$375 <span>purchase</span></div>
+        </div>
+        <div class="tool-body">
+          <div class="cap-row"><span class="cap-label">Wiremap / Pinout</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">Split Pair Detection</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">TDR Length</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">PoE Detection</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">PoE Class / Wattage</span><span class="cap-val yes">✔ Full</span></div>
+          <div class="cap-row"><span class="cap-label">Link Speed</span><span class="cap-val yes">✔ 10/100/1G</span></div>
+          <div class="cap-row"><span class="cap-label">Digital Report Output</span><span class="cap-val partial">⚠ Manual log</span></div>
+          <div class="cap-row"><span class="cap-label">TIA-568 Certification</span><span class="cap-val no">✘ No</span></div>
+          <div class="tool-note">Best for: comprehensive in-progress verification. Full PoE class readout (af/at/bt), real link speed negotiation, and Fluke brand credibility on field logs. Best single tool under $500.</div>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-name">Pockethernet</div>
+          <div class="tool-maker">Pockethernet</div>
+          <div class="tool-price">~$165 <span>purchase</span></div>
+        </div>
+        <div class="tool-body">
+          <div class="cap-row"><span class="cap-label">Wiremap / Pinout</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">Split Pair Detection</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">TDR Length</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">PoE Detection</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">PoE Class / Wattage</span><span class="cap-val yes">✔ Full</span></div>
+          <div class="cap-row"><span class="cap-label">Link Speed</span><span class="cap-val yes">✔ 10/100/1G</span></div>
+          <div class="cap-row"><span class="cap-label">Digital Report Output</span><span class="cap-val yes">✔ PDF via app</span></div>
+          <div class="cap-row"><span class="cap-label">TIA-568 Certification</span><span class="cap-val no">✘ No</span></div>
+          <div class="tool-note">Best for: tech-forward teams who want app-based logging and PDF verification reports without a formal cert. Bluetooth to iOS/Android. Good paper trail for internal QC archives.</div>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-name">DSX-600</div>
+          <div class="tool-maker">Fluke Networks</div>
+          <div class="tool-price">~$400/wk <span>rental</span></div>
+        </div>
+        <div class="tool-body">
+          <div class="cap-row"><span class="cap-label">Wiremap / Pinout</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">Split Pair Detection</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">TDR Length</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">PoE Detection</span><span class="cap-val yes">✔ Yes</span></div>
+          <div class="cap-row"><span class="cap-label">PoE Class / Wattage</span><span class="cap-val yes">✔ Full</span></div>
+          <div class="cap-row"><span class="cap-label">Link Speed</span><span class="cap-val yes">✔ Full</span></div>
+          <div class="cap-row"><span class="cap-label">Digital Report Output</span><span class="cap-val yes">✔ LinkWare PDF/XML</span></div>
+          <div class="cap-row"><span class="cap-label">TIA-568 Certification</span><span class="cap-val yes">✔ Full — Level IV</span></div>
+          <div class="tool-note">Use at closeout only. Rental from TestEquity, Microlease, or ANIXTER. One week covers most projects. LinkWare Live generates owner-ready cert reports accepted by engineers of record and manufacturers for warranty.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <hr class="section-divider">
+    <h3>Head-to-Head: Key Parameter Matrix</h3>
+    <div class="comp-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Klein Scout Pro 3</th>
+            <th>Fluke MicroScanner PoE</th>
+            <th>Pockethernet</th>
+            <th>Fluke DSX-600</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="param-name">Price</td><td>~$130</td><td>~$375</td><td>~$165</td><td>~$400/wk rental</td></tr>
+          <tr><td class="param-name">Wiremap</td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td></tr>
+          <tr><td class="param-name">Split Pair Detection</td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td></tr>
+          <tr><td class="param-name">TDR Length</td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td></tr>
+          <tr><td class="param-name">PoE Class (af/at/bt)</td><td><span class="half">~</span> Basic</td><td><span class="tick">✔</span> Full</td><td><span class="tick">✔</span> Full</td><td><span class="tick">✔</span> Full</td></tr>
+          <tr><td class="param-name">Link Speed (1G verify)</td><td><span class="cross">✘</span></td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td><td><span class="tick">✔</span></td></tr>
+          <tr><td class="param-name">Insertion Loss / NEXT</td><td><span class="cross">✘</span></td><td><span class="cross">✘</span></td><td><span class="cross">✘</span></td><td><span class="tick">✔</span></td></tr>
+          <tr><td class="param-name">Return Loss / Delay Skew</td><td><span class="cross">✘</span></td><td><span class="cross">✘</span></td><td><span class="cross">✘</span></td><td><span class="tick">✔</span></td></tr>
+          <tr><td class="param-name">PDF/Digital Report</td><td><span class="cross">✘</span></td><td><span class="half">~</span> Manual</td><td><span class="tick">✔</span> App</td><td><span class="tick">✔</span> LinkWare</td></tr>
+          <tr><td class="param-name">TIA-568 Certification</td><td><span class="cross">✘</span></td><td><span class="cross">✘</span></td><td><span class="cross">✘</span></td><td><span class="tick">✔</span> Level IV</td></tr>
+          <tr><td class="param-name">Best Use Phase</td><td>Rough-in QC</td><td>Rough-in + PoE</td><td>Rough-in + Logging</td><td>Closeout Cert</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout info" style="margin-top:24px;">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>Recommended Two-Tool Strategy</strong>
+        <p>Purchase the <strong>Fluke MicroScanner PoE (~$375)</strong> for all in-progress verification. It handles PoE class, link speed, wiremap, and length — everything needed during rough-in. Rent the <strong>Fluke DSX-600 (~$400/wk)</strong> at closeout for the formal TIA-568 certification sweep. Total project cost: ~$775 for the first project. Subsequent projects: only the rental cost.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PANEL 3 — SPEC LANGUAGE
+  ════════════════════════════════════════════ -->
+  <div id="panel-spec" class="panel">
+
+    <div class="section-label">Closeout Specification Language</div>
+    <h2>Ready-to-Use Specification Sections</h2>
+    <p style="color:var(--text-dim); font-size:14px; margin-bottom:24px;">CSI-format language for project specifications, scopes of work, and owner turnover packages. Modify project-specific values in brackets. Use in Section 27 05 26 (LAN Cabling) or equivalent.</p>
+
+    <div class="spec-block">
+      <button class="copy-btn" onclick="copySpec(this)">Copy</button>
+      <div class="spec-label">Section 1 — Testing Standards &amp; Authority</div>
+      <div class="spec-text"><span class="kw">1.01 STANDARDS</span>
+
+A.  All horizontal copper cabling shall be installed and tested in 
+    conformance with <span class="ref">ANSI/TIA-568.2-D</span>, Balanced Twisted-Pair 
+    Telecommunications Cabling and Components Standard, and 
+    <span class="ref">ANSI/TIA-1152-A</span>, Requirements for Field Test Instruments 
+    and Measurements for Balanced Twisted-Pair Cabling.
+
+B.  All Category 6 cabling shall meet or exceed the performance 
+    requirements specified in <span class="ref">ANSI/TIA-568.2-D, Annex C</span> 
+    for Category 6 horizontal cabling.
+
+C.  Wiring shall be terminated per the <span class="ref">T568-B</span> wiring scheme 
+    unless otherwise directed by the Owner or Engineer of Record. 
+    Wiring schemes shall not be mixed within the same installation.</div>
+    </div>
+
+    <div class="spec-block">
+      <button class="copy-btn" onclick="copySpec(this)">Copy</button>
+      <div class="spec-label">Section 2 — Field Testing Requirements</div>
+      <div class="spec-text"><span class="kw">1.02 FIELD TESTING — VERIFICATION (IN-PROGRESS)</span>
+
+A.  The Contractor shall verify each installed cable segment using 
+    a field verification tester capable of, at minimum:
+        1.  Wiremap / pinout verification per T568-B or T568-A
+        2.  Detection of opens, shorts, reversed pairs, and split pairs
+        3.  TDR-based length measurement accurate to ± 1 meter
+        4.  PoE voltage and class detection (IEEE 802.3af/at/bt)
+        5.  Active link speed negotiation verification, minimum 
+            <span class="kw">1000BASE-T (1 Gbps)</span> per IEEE 802.3ab
+
+B.  Verification shall be performed on each installed cable segment 
+    following termination and prior to wall or ceiling closure.
+
+C.  All segments failing verification shall be corrected before 
+    concealment. Defect logs shall be retained as part of the 
+    project quality record.
+
+<span class="kw">1.03 FIELD TESTING — FORMAL CERTIFICATION (CLOSEOUT)</span>
+
+A.  Prior to Substantial Completion, the Contractor shall perform 
+    a complete performance certification sweep of all installed 
+    Category 6 horizontal cabling.
+
+B.  Certification shall be performed using a field tester meeting 
+    <span class="ref">ANSI/TIA-1152-A Level IIIe or Level IV</span> accuracy requirements 
+    (e.g., Fluke Networks DSX CableAnalyzer series or equivalent).
+
+C.  Each cable segment shall be tested in <span class="ref">Permanent Link</span> 
+    configuration per ANSI/TIA-568.2-D and shall pass ALL 
+    of the following parameters:
+        1.  Wiremap
+        2.  Length (≤ 90 meters, permanent link)
+        3.  Insertion Loss
+        4.  NEXT (Near-End Crosstalk)
+        5.  PS-NEXT (Power Sum NEXT)
+        6.  ACRF (Attenuation-to-Crosstalk Ratio, Far-End)
+        7.  PS-ACRF
+        8.  Return Loss
+        9.  Propagation Delay (≤ 555 ns)
+        10. Delay Skew (≤ 50 ns)
+        11. DC Loop Resistance
+
+D.  Any segment failing one or more parameters shall be 
+    re-terminated or replaced and re-tested. Certification 
+    reports shall reflect the final passing test results only.</div>
+    </div>
+
+    <div class="spec-block">
+      <button class="copy-btn" onclick="copySpec(this)">Copy</button>
+      <div class="spec-label">Section 3 — PoE Performance Language</div>
+      <div class="spec-text"><span class="kw">1.04 POE INFRASTRUCTURE REQUIREMENTS</span>
+
+A.  Cable segments designated to carry Power over Ethernet (PoE) 
+    loads shall meet additional DC resistance requirements as 
+    specified in <span class="ref">IEEE 802.3bt</span> for Type 3 (60W) and Type 4 (90W) 
+    applications where applicable.
+
+B.  The Contractor shall field-verify PoE voltage delivery on 
+    designated drops using a calibrated PoE tester. Acceptable 
+    parameters:
+        - IEEE 802.3af:  PoE, ≤ 15.4W, 44–57V DC (pairs 1,2 / 3,6)
+        - IEEE 802.3at:  PoE+, ≤ 30W, 50–57V DC (pairs 1,2 / 3,6)
+        - IEEE 802.3bt:  PoE++, ≤ 90W, 52–57V DC (all 4 pairs)
+
+C.  DC resistance per conductor on PoE-designated runs shall not 
+    exceed <span class="ref">12.5 Ω per 100 meters</span>. Runs with excessive resistance 
+    shall be replaced, not re-terminated.
+
+D.  PoE verification results shall be documented per drop ID 
+    and included in the closeout package.</div>
+    </div>
+
+    <div class="spec-block">
+      <button class="copy-btn" onclick="copySpec(this)">Copy</button>
+      <div class="spec-label">Section 4 — Closeout Documentation &amp; Deliverables</div>
+      <div class="spec-text"><span class="kw">1.05 CLOSEOUT DELIVERABLES — STRUCTURED CABLING</span>
+
+A.  At Substantial Completion, the Contractor shall submit to 
+    the Owner a complete Structured Cabling As-Built and 
+    Test Record package including:
+
+    <span class="ref">1.  Certification Test Records</span>
+        - One (1) passing TIA-568.2-D test result per cable segment
+        - Format: Fluke LinkWare Live report or equivalent 
+          exportable PDF and XML archive
+        - Organized by: Building / Floor / IDF / Drop ID
+
+    <span class="ref">2.  As-Built Documentation</span>
+        - Patch panel schedule with Drop ID, location, and 
+          cable category
+        - Floor plan marked with all outlet locations and IDs
+        - Pathway and conduit routing diagram (if applicable)
+
+    <span class="ref">3.  Warranty Documentation</span>
+        - Manufacturer application-for-warranty (if applicable)
+        - Statement of compliance with installation requirements
+          necessary to activate manufacturer's system warranty
+
+    <span class="ref">4.  In-Progress QC Logs</span>
+        - Field verification logs from rough-in phase, including 
+          per-drop record of negotiated link speed (minimum 
+          acceptable: <span class="kw">1000BASE-T / 1 Gbps</span>)
+        - Any drop that failed to negotiate 1000BASE-T shall be 
+          logged with root cause and corrective action taken
+        - Defect log with corrective actions taken
+
+B.  All test data shall be archived digitally. Paper-only 
+    submittals will not be accepted.
+
+C.  Test records shall be organized such that any individual 
+    cable segment can be located and its test result retrieved 
+    within 60 seconds by a non-technical Owner representative.</div>
+    </div>
+
+    <div class="callout warn" style="margin-top:4px;">
+      <div class="callout-icon">📋</div>
+      <div class="callout-body">
+        <strong>Application Note — Manufacturer Warranty Programs</strong>
+        <p>Major manufacturers (CommScope, Panduit, Belden, Legrand) offer extended system warranties (15–25 years) when cabling is installed and certified by their authorized channel partners using approved test equipment and methods. Verify eligibility requirements with the manufacturer's rep prior to specification — this can be a significant value-add for the owner and differentiator in your proposal.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="doc-footer">
+    <p>KGS Technical Reference · Rev 1.0 · May 2026 · ANSI/TIA-568.2-D Compliant</p>
+    <p>CAT 6 Field Validation Tool · Version 00.01.000 · 2026-10-12 · Combines the Field Validation Package and the Field Verification Checklist</p>
+    <p>Standards: <a href="#">ANSI/TIA-568.2-D</a> · <a href="#">ANSI/TIA-1152-A</a> · <a href="#">IEEE 802.3bt</a></p>
+  </div>
+
+</div><!-- end .content -->
+
+<script>
+  function switchTab(id, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    el.classList.add('active');    if (history.replaceState) history.replaceState(null, '', '#' + id);
+  }
+
+  // Open a tab from the URL hash (e.g. index.html#checklist)
+  (function () {
+    const id = (location.hash || '').slice(1);
+    const el = document.querySelector('.tab[data-tab="' + id + '"]');
+    if (el) switchTab(id, el);
+  })();
+
+  // Offline support (PWA). Not available from file:// — the page still works there without it.
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  }
+
+  function copySpec(btn) {
+    const block = btn.closest('.spec-block');
+    const text = block.querySelector('.spec-text').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = orig, 1800);
+    });
+  }
+</script>
+
+</body>
+</html>

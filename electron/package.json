@@ -1,0 +1,44 @@
+{
+  "name": "cat6-field-validation-tool",
+  "productName": "CAT 6 Field Validation Tool",
+  "version": "0.1.0",
+  "appRevision": "00.01.000",
+  "description": "KGS CAT 6 Field Validation Package and Field Verification Checklist.",
+  "author": "Brent",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "prepare-app": "node scripts/prepare.js",
+    "start": "npm run prepare-app && electron .",
+    "dist": "npm run prepare-app && node scripts/dist.js"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.github.thebmgatkgs.cat6fieldvalidationtool",
+    "productName": "CAT 6 Field Validation Tool",
+    "files": [
+      "main.js",
+      "app/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "CAT 6 Field Validation Tool"
+    }
+  }
+}
