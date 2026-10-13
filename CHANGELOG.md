@@ -9,3 +9,4 @@
 - Service worker caches the whole app for offline use from a GitHub Pages path; opening `index.html` from disk works without it.
 - Electron wrapper in `electron/`; `npm run dist` builds `CAT6.Field.Validation.Tool.Setup.00.01.000.exe` (NSIS).
 - App version shown in the header ("App: Version 00.01.000") and footer.
+- Help panel (Quick Start, per-tab help, FAQs, Install & privacy, Disclaimer) and Revision log, modeled on PipeCAD Project Merge.
