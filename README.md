@@ -1,7 +1,7 @@
 # CAT 6 Field Validation Tool
 
-KGS CAT 6 Field Validation Package + Structured Cabling Field Verification Checklist, in one offline web app and Windows desktop app.
+KGS CAT 6 Field Validation Package (SOP, tool comparison, spec language) plus the Structured Cabling Field Verification Checklist, in one offline app.
 
-- Web / PWA: open `index.html` (GitHub Pages: serve repo root). `checklist.html` is the field form, shown in tab ②.
-- Desktop: `cd electron && npm install && npm run dist` → `electron/dist/CAT6.Field.Validation.Tool.Setup.<version>.exe` (needs wine on Linux).
-- Version lives in `index.html` ("Version 00.01.000"); bump it, `sw.js` CACHE_NAME, and CHANGELOG.md together.
+- Web/PWA: serve the repo root (GitHub Pages from `main` / root). Open `index.html`.
+- Windows: `cd electron && npm install && npm run dist` (wine needed on Linux) → `electron/dist/CAT6.Field.Validation.Tool.Setup.<version>.exe`.
+- Version lives in `index.html` ("Version xx.xx.xxx"); bump `CACHE_NAME` in `sw.js` and add a CHANGELOG entry with each release.
