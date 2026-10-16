@@ -1,5 +1,8 @@
 # CAT 6 Field Validation Tool
 
+![CAT 6 Field Validation Package PWA in its dark theme: Field SOP tab showing the rough-in verification procedure](docs/screenshot.png)
+
+
 KGS CAT 6 Field Validation Package (SOP, tool comparison, spec language) plus the Structured Cabling Field Verification Checklist, in one offline app.
 
 
